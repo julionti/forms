@@ -8,8 +8,9 @@ import { Component, OnInit } from '@angular/core';
 export class TemplateFormComponent implements OnInit {
 
   usuario: any = {
-    nome: 'https://www.the-art-of-web.com/html/html5-form-validation/',
-    email: 'julio@email.com'
+    // nome: 'https://www.the-art-of-web.com/html/html5-form-validation/',
+    nome: null,
+    email: null
   };
 
   onSubmit(form) {
