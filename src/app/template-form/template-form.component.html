@@ -1,10 +1,9 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f)">
-  <div class="was-validated"
-    [class.has-error]="!nome.valid && nome.touched"
+  <div class="was-validated" [class.has-error]="!nome.valid && nome.touched"
     [class.has-feedback]="!nome.valid && nome.touched">
     <label for="nome" class="control-label">Nome</label>
-    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome"
-      [ngModel]="usuario.nome" required #nome="ngModel">
+    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" [ngModel]="usuario.nome" required
+      #nome="ngModel">
     <!-- <div>
              {{ nome.className }}
            </div> -->
@@ -28,8 +27,7 @@
     <span id="email" class="sr-only" *ngIf="!email.valid && email.touched">(error)</span>
   </div>
 
-  <button type="submit" class="btn btn-primary mb-2"
-    [disabled]="!f.valid">Submit</button>
+  <button type="submit" class="btn btn-primary mb-2" [disabled]="!f.valid">Submit</button>
 
-
+  <app-form-debug [form]="f"></app-form-debug>
 </form>
