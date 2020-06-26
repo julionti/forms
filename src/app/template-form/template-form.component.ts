@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+// import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-template-form',
@@ -13,23 +15,44 @@ export class TemplateFormComponent implements OnInit {
     email: null
   };
 
+  constructor(private http: HttpClient) { }
+
   onSubmit(form) {
     console.log(form);
     console.log(this.usuario);
   }
 
-  verificaValidTouched(campo){
+  verificaValidTouched(campo) {
     return !campo.valid && campo.touched;
   }
 
-  aplicaCssErro(campo){
+  aplicaCssErro(campo) {
     return {
       'has-error': this.verificaValidTouched(campo),
       'has-feedback': this.verificaValidTouched(campo)
     };
   }
 
-  constructor() { }
+  consultaCEP(cep) {
+    // console.log(cep);
+    // Nova variável "cep" somente com dígitos.
+    cep = cep.replace(/\D/g, '');
+    // Verifica se campo cep possui valor informado.
+    if (cep !== '') {
+      // Expressão regular para validar o CEP.
+      const validacep = /^[0-9]{8}$/;
+      // Valida o formato do CEP.
+      if (validacep.test(cep)) {
+        // Consulta o webservice viacep.com.br/
+        this.http.get('https://viacep.com.br/ws/' + cep + '/json');
+        this.http.get(`https://viacep.com.br/ws/${cep}/json`)
+          // .map(dados => dados.json())
+          .subscribe(dados => console.log(dados));
+
+      }
+
+    }
+  }
 
   ngOnInit(): void {
   }
