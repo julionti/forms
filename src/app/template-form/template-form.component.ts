@@ -33,7 +33,7 @@ export class TemplateFormComponent implements OnInit {
     };
   }
 
-  consultaCEP(cep) {
+  consultaCEP(cep, form) {
     // console.log(cep);
     // Nova variável "cep" somente com dígitos.
     cep = cep.replace(/\D/g, '');
@@ -43,15 +43,59 @@ export class TemplateFormComponent implements OnInit {
       const validacep = /^[0-9]{8}$/;
       // Valida o formato do CEP.
       if (validacep.test(cep)) {
+
+        this.resetaDadosForm(form);
         // Consulta o webservice viacep.com.br/
-        this.http.get('https://viacep.com.br/ws/' + cep + '/json');
+        // this.http.get('https://viacep.com.br/ws/' + cep + '/json');
         this.http.get(`https://viacep.com.br/ws/${cep}/json`)
           // .map(dados => dados.json())
-          .subscribe(dados => console.log(dados));
+          .subscribe(dados => // console.log(dados)
+            this.populaDadosForm(dados, form)
+          );
 
       }
 
     }
+  }
+
+  populaDadosForm(dados, formulario) {
+    // formulario.setValue({
+    //   nome: formulario.value.nome,
+    //   email: formulario.value.email,
+    //   endereco: {
+    //     rua: dados.logradouro,
+    //     cep: dados.cep,
+    //     numero: '',
+    //     complemento: dados.complemento,
+    //     bairro: dados.bairro,
+    //     cidade: dados.localidade,
+    //     estado: dados.uf
+    //   }
+    // });
+    console.log(formulario);
+    formulario.form.patchValue({
+      endereco: {
+        rua: dados.logradouro,
+        cep: dados.cep,
+        complemento: dados.complemento,
+        bairro: dados.bairro,
+        cidade: dados.localidade,
+        estado: dados.uf
+      }
+    });
+  }
+
+  resetaDadosForm(formulario) {
+    formulario.form.patchValue({
+      endereco: {
+        rua: null,
+        cep: null,
+        complemento: null,
+        bairro: null,
+        cidade: null,
+        estado: null
+      }
+    });
   }
 
   ngOnInit(): void {
