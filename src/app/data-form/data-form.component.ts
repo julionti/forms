@@ -11,8 +11,9 @@ export class DataFormComponent implements OnInit {
 
   formulario: FormGroup;
 
-  constructor(private formBuilder: FormBuilder,
-              private http: HttpClient) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private http: HttpClient) { }
 
   ngOnInit(): void {
 
@@ -24,11 +25,20 @@ export class DataFormComponent implements OnInit {
 
 
   onSubmit() {
-    console.log(this.formulario.value);
+    console.log('a' + this.formulario.value);
 
+    // this.http.post('https://sshttpbin.org/post', JSON.stringify(this.formulario.value)) // testar erro
     this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)) // rest test
       // .map(res => res)
-      .subscribe(dados => console.log(dados))
-      ;
+      .subscribe(dados => {
+        console.log(dados);
+        // reseta o form
+        this.resetar();
+      },
+        (error: any) => alert('erro')); // url invalida por exemplo o formulario nao reseta
+  }
+
+  resetar() {
+    this.formulario.reset();
   }
 }
