@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DataFormComponent implements OnInit {
 
-  formulario: FormGroup;
+  formulario: FormGroup; // associado a <form [formGroup]="formulario">
 
   constructor(
     private formBuilder: FormBuilder,
@@ -17,21 +17,21 @@ export class DataFormComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.formulario = this.formBuilder.group({ // assiciado a <form [formGroup]="formulario">
-      nome: null,
-      email: null
+    this.formulario = this.formBuilder.group({ // associado a <form [formGroup]="formulario">
+      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+      email: [null, [Validators.required, Validators.email]]
     });
   }
 
 
   onSubmit() {
-    console.log('a' + this.formulario.value);
+    console.log(this.formulario);
 
     // this.http.post('https://sshttpbin.org/post', JSON.stringify(this.formulario.value)) // testar erro
     this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)) // rest test
       // .map(res => res)
       .subscribe(dados => {
-        console.log(dados);
+        console.log('dados' + JSON.stringify(dados));
         // reseta o form
         this.resetar();
       },
