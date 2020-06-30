@@ -27,8 +27,7 @@
     <div class="form-group row" [ngClass]="aplicaCssErro('endereco.cep')">
       <div class="col-sm-3">
         <label for="cep" class="col-sm-3 col-form-label">CEP</label>
-        <input type="text" class="form-control" id="cep" formControlName="cep"
-        (blur)="consultaCEP()">
+        <input type="text" class="form-control" id="cep" formControlName="cep" (blur)="consultaCEP()">
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cep')" msgErro="CEP é obrigatório">
         </app-campo-control-erro>
       </div>
@@ -76,6 +75,7 @@
   </div>
 
   <button type="submit" class="btn btn-primary mb-2">Submit</button>
+  <!-- <button type="submit" class="btn btn-primary mb-2" [disabled]="!formulario.valid">Submit</button> -->
   <button type="button" (click)="resetar()">Cancelar</button>
 
   <app-form-debug [form]="formulario"></app-form-debug>

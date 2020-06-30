@@ -37,15 +37,32 @@ export class DataFormComponent implements OnInit {
   onSubmit() {
     console.log(this.formulario);
 
-    // this.http.post('https://sshttpbin.org/post', JSON.stringify(this.formulario.value)) // testar erro
-    this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)) // rest test
-      // .map(res => res)
-      .subscribe(dados => {
-        console.log(dados);
-        // reseta o form
-        this.resetar();
-      },
-        (error: any) => alert('erro')); // url invalida por exemplo o formulario nao reseta
+    if (this.formulario.valid) {
+      // this.http.post('https://sshttpbin.org/post', JSON.stringify(this.formulario.value)) // testar erro
+      this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)) // rest test
+        // .map(res => res)
+        .subscribe(dados => {
+          console.log(dados);
+          // reseta o form
+          this.resetar();
+        },
+          (error: any) => alert('erro')); // url invalida por exemplo o formulario nao reseta
+    } else {
+      console.log('Formulário inválido');
+      this.verificaValidacoesForm(this.formulario);
+    }
+  }
+
+  verificaValidacoesForm(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(campo => {
+      console.log(campo);
+      const controle = formGroup.get(campo);
+      controle.markAsDirty();
+      if (controle instanceof FormGroup){
+        this.verificaValidacoesForm(controle);
+      }
+    }
+    );
   }
 
   resetar() {
