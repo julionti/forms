@@ -73,4 +73,53 @@ export class DataFormComponent implements OnInit {
       // 'has-feedback': this.verificaValidTouched(campo)
     };
   }
+
+  consultaCEP() {
+    let cep = this.formulario.get('endereco.cep').value;
+
+    cep = cep.replace(/\D/g, '');
+
+    if (cep !== '') {
+      const validacep = /^[0-9]{8}$/;
+
+      if (validacep.test(cep)) {
+        this.resetaDadosForm();
+        // Consulta o webservice viacep.com.br/
+        // this.http.get('https://viacep.com.br/ws/' + cep + '/json');
+        this.http.get(`https://viacep.com.br/ws/${cep}/json`)
+          // .map(dados => dados.json())
+          .subscribe(dados => // console.log(dados)
+            this.populaDadosForm(dados)
+          );
+      }
+    }
+    this.formulario.get('nome').setValue('Julio');
+  }
+
+  populaDadosForm(dados) {
+    console.log(this.formulario);
+    this.formulario.patchValue({
+      endereco: {
+        rua: dados.logradouro,
+        cep: dados.cep,
+        complemento: dados.complemento,
+        bairro: dados.bairro,
+        cidade: dados.localidade,
+        estado: dados.uf
+      }
+    });
+  }
+
+  resetaDadosForm() {
+    this.formulario.patchValue({
+      endereco: {
+        rua: null,
+        cep: null,
+        complemento: null,
+        bairro: null,
+        cidade: null,
+        estado: null
+      }
+    });
+  }
 }
