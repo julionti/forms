@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { DropdownService } from './../shared/services/dropdown.service';
 import { EstadoBr } from './../shared/models/estado-br';
 import { ConsultaCepService } from './../shared/services/consulta-cep.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-data-form',
@@ -14,7 +15,8 @@ import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 export class DataFormComponent implements OnInit {
 
   formulario: FormGroup; // associado a <form [formGroup]="formulario">
-  estados: EstadoBr[];
+  // estados: EstadoBr[];
+  estados: Observable<EstadoBr[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,10 +26,12 @@ export class DataFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-    this.dropdownService.getEstadosBr()
-      .subscribe(dados => { this.estados = dados; console.log(dados); });
-
+    // pode ficar na memoria mesmo de pois de destruido o component
+    /* this.dropdownService.getEstadosBr()
+       .subscribe(dados => { this.estados = dados; console.log(dados);
+       });*/
+    // não precisa do subscribe nem do unsubscribe pois é async(no html)
+    this.estados = this.dropdownService.getEstadosBr();
 
     this.formulario = this.formBuilder.group({ // associado a <form [formGroup]="formulario">
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
