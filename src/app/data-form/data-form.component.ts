@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
+import { DropdownService } from './../shared/services/dropdown.service';
+import { EstadoBr } from './../shared/models/estado-br';
+
 @Component({
   selector: 'app-data-form',
   templateUrl: './data-form.component.html',
@@ -10,12 +13,18 @@ import { HttpClient } from '@angular/common/http';
 export class DataFormComponent implements OnInit {
 
   formulario: FormGroup; // associado a <form [formGroup]="formulario">
+  estados: EstadoBr[];
 
   constructor(
     private formBuilder: FormBuilder,
-    private http: HttpClient) { }
+    private http: HttpClient,
+    private dropdownService: DropdownService) { }
 
   ngOnInit(): void {
+
+    this.dropdownService.getEstadosBr()
+      .subscribe(dados => { this.estados = dados; console.log(dados); });
+
 
     this.formulario = this.formBuilder.group({ // associado a <form [formGroup]="formulario">
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
@@ -58,7 +67,7 @@ export class DataFormComponent implements OnInit {
       console.log(campo);
       const controle = formGroup.get(campo);
       controle.markAsDirty();
-      if (controle instanceof FormGroup){
+      if (controle instanceof FormGroup) {
         this.verificaValidacoesForm(controle);
       }
     }
