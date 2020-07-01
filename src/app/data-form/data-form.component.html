@@ -76,22 +76,30 @@
     </div>
   </div>
 
-  <div class="fom-group">
+  <div class="fom-group row" row>
     <div class="col-sm-3" [ngClass]="aplicaCssErro('cargo')">
       <label for="cargo" class="col-sm-3 col-form-label">Cargo</label>
       <select class="form-control" id="cargo" formControlName="cargo" [compareWith]="CompararCargos">
         <option *ngFor="let cargo of cargos" [ngValue]="cargo">{{ cargo.desc }}</option>
       </select>
     </div>
-  </div>
 
-  <div class="fom-group">
     <div class="col-sm-3" [ngClass]="aplicaCssErro('tecnologias')">
       <label for="tecnologias" class="col-sm-3 col-form-label">Tecnologias</label>
       <select multiple class="form-control" id="tecnologias" formControlName="tecnologias">
         <option *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{ tecnologia.desc }}</option>
       </select>
     </div>
+
+    <div class="col-sm-6" [ngClass]="aplicaCssErro('newsletter')">
+      <label for="newsletter" class="col-sm-3 col-form-label">Newsletter</label>
+      <div class="form-check form-check-inline" col-sm-4 *ngFor="let item of newsletterOp">
+        <label class="form-check-label" for="inlineCheckbox1">
+          <input class="form-check-input" type="radio" formControlName="newsletter" [value]="item.valor">
+          {{ item.desc }}</label>
+      </div>
+    </div>
+
   </div>
 
   <button type="submit" class="btn btn-primary mb-2">Submit</button>

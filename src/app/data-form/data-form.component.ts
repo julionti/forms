@@ -20,6 +20,7 @@ export class DataFormComponent implements OnInit {
 
   cargos: any[];
   tecnologias: any[];
+  newsletterOp: any[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,6 +39,7 @@ export class DataFormComponent implements OnInit {
 
     this.cargos = this.dropdownService.getCargos();
     this.tecnologias = this.dropdownService.getTecnologias();
+    this.newsletterOp=this.dropdownService.getNewsLetter();
 
     this.formulario = this.formBuilder.group({ // associado a <form [formGroup]="formulario">
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
@@ -54,7 +56,8 @@ export class DataFormComponent implements OnInit {
       }),
 
       cargo: [null],
-      tecnologias: [null]
+      tecnologias: [null],
+      newsletter: ['s']
     });
   }
 
