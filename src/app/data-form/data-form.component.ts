@@ -46,6 +46,8 @@ export class DataFormComponent implements OnInit {
     this.formulario = this.formBuilder.group({ // associado a <form [formGroup]="formulario">
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       email: [null, [Validators.required, Validators.email]],
+      confirmarEmail: [null, FormValidations.equalTo('email')],
+      // confirmarEmail: [null, FormValidations.equalTo('email123')],
 
       endereco: this.formBuilder.group({
         cep: [null, [Validators.required, FormValidations.cepValidator]],
@@ -115,6 +117,7 @@ export class DataFormComponent implements OnInit {
   }
 
   verificaValidTouched(campo: string) {
+    console.log(this.formulario);
     return (
       !this.formulario.get(campo).valid &&
       (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)

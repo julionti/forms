@@ -1,4 +1,5 @@
-import { FormArray, FormControl } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { throws } from 'assert';
 
 export class FormValidations {
 
@@ -23,9 +24,35 @@ export class FormValidations {
     const cep = control.value;
     if (cep && cep !== '') {
       const validacep = /^[0-9]{8}$/;
-      return validacep.test(cep) ? null : { cepInvalido : true };
+      return validacep.test(cep) ? null : { cepInvalido: true };
     }
 
     return null;
   }
+
+  static equalTo(otherField: string) {
+    const validator = (formControl: FormControl) => {
+      if (otherField == null) {
+        throw new Error('É necessário informar um campo');
+      }
+
+      if (!formControl.root || !(formControl.root as FormGroup).controls) {
+        return null;
+      }
+      console.log((formControl.root as FormGroup).get(otherField)); // null campo nãp foi renderizado
+      const field = (formControl.root as FormGroup).get(otherField);
+
+      if (!field) {
+        throw new Error('É necessário informar um campo válido');
+      }
+      if (field.value !== formControl.value) {
+        return { equalTo: otherField };
+      }
+
+      return null;
+    };
+    return validator;
+  }
+
+  // ng2-validation
 }
