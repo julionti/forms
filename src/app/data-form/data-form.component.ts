@@ -48,7 +48,7 @@ export class DataFormComponent implements OnInit {
       email: [null, [Validators.required, Validators.email]],
 
       endereco: this.formBuilder.group({
-        cep: [null, Validators.required],
+        cep: [null, [Validators.required, FormValidations.cepValidator]],
         numero: [null, Validators.required],
         complemento: [null],
         rua: [null, Validators.required],
@@ -81,13 +81,13 @@ export class DataFormComponent implements OnInit {
         .map((v, i) => v ? this.frameworks[i] : null).
         filter(v => v !== null)
     });
-    console.log(valueSubmit);
+    // console.log(valueSubmit);
     if (this.formulario.valid) {
       // this.http.post('https://sshttpbin.org/post', JSON.stringify(this.formulario.value)) // testar erro
       this.http.post('https://httpbin.org/post', JSON.stringify(valueSubmit)) // rest test
         // .map(res => res)
         .subscribe(dados => {
-          console.log(dados);
+          // console.log(dados);
           // reseta o form
           this.resetar();
         },
@@ -100,7 +100,7 @@ export class DataFormComponent implements OnInit {
 
   verificaValidacoesForm(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(campo => {
-      console.log(campo);
+      // console.log(campo);
       const controle = formGroup.get(campo);
       controle.markAsDirty();
       if (controle instanceof FormGroup) {
@@ -114,9 +114,16 @@ export class DataFormComponent implements OnInit {
     this.formulario.reset();
   }
 
-  verificaValidTouched(campo) {
+  verificaValidTouched(campo: string) {
     return (
       !this.formulario.get(campo).valid &&
+      (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)
+    );
+  }
+
+  verificaRequired(campo: string) {
+    return (
+      this.formulario.get(campo).hasError('required') &&
       (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)
     );
   }
@@ -138,7 +145,6 @@ export class DataFormComponent implements OnInit {
 
   consultaCEP() {
     const cep = this.formulario.get('endereco.cep').value;
-
     if (cep != null && cep !== '') {
       this.cepService.consultaCEP(cep)
         .subscribe(dados => this.populaDadosForm(dados));
@@ -146,11 +152,11 @@ export class DataFormComponent implements OnInit {
   }
 
   populaDadosForm(dados) {
-    console.log(this.formulario);
+    // console.log(this.formulario);
     this.formulario.patchValue({
       endereco: {
         rua: dados.logradouro,
-        cep: dados.cep,
+        // cep: dados.cep,
         complemento: dados.complemento,
         bairro: dados.bairro,
         cidade: dados.localidade,
