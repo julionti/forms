@@ -116,17 +116,16 @@
     <div class="fom-group row col-sm-6" row [ngClass]="aplicaCssErro('frameworks')">
       <label class="label" for="frameworks">Frameworks:</label>
       <div class="form-check form-check-inline" id="frameworks">
-        <div class="checkbox col-sm-4" formArrayName="frameworks" *ngFor="let item of getFrameworksControls(); let i = index">
+        <div class="checkbox col-sm-4" formArrayName="frameworks"
+          *ngFor="let item of getFrameworksControls(); let i = index">
           <label class="form-check-label">
-          <input class="form-check-input" type="checkbox" [formControlName]="i">{{ frameworks[i] }}
+            <input class="form-check-input" type="checkbox" [formControlName]="i">{{ frameworks[i] }}
           </label>
         </div>
       </div>
+      <app-campo-control-erro [mostrarErro]="!formulario.get('frameworks').valid" msgErro="Selecione duas opções">
+      </app-campo-control-erro>
     </div>
-
-
-    <app-campo-control-erro [mostrarErro]="!formulario.get('frameworks').valid" msgErro="Por favor, aceite os termos">
-    </app-campo-control-erro>
   </div>
 
   <button type="submit" class="btn btn-primary mb-2">Submit</button>
