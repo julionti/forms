@@ -1,7 +1,9 @@
+import { VerificaEmailService } from './services/verifica-email.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { DropdownService } from './../shared/services/dropdown.service';
 import { EstadoBr } from './../shared/models/estado-br';
@@ -28,10 +30,14 @@ export class DataFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private dropdownService: DropdownService,
-    private cepService: ConsultaCepService
+    private cepService: ConsultaCepService,
+    private verificaEmailService: VerificaEmailService
   ) { }
 
   ngOnInit(): void {
+
+    // this.verificaEmailService.verificarEmail('email@email.com').subscribe();
+
     // pode ficar na memoria mesmo de pois de destruido o component
     /* this.dropdownService.getEstadosBr()
        .subscribe(dados => { this.estados = dados; console.log(dados);
@@ -45,7 +51,7 @@ export class DataFormComponent implements OnInit {
 
     this.formulario = this.formBuilder.group({ // associado a <form [formGroup]="formulario">
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-      email: [null, [Validators.required, Validators.email]],
+      email: [null, [Validators.required, Validators.email], this.validarEmail.bind(this)], // bind define escopo local
       confirmarEmail: [null, FormValidations.equalTo('email')],
       // confirmarEmail: [null, FormValidations.equalTo('email123')],
 
@@ -117,7 +123,7 @@ export class DataFormComponent implements OnInit {
   }
 
   verificaValidTouched(campo: string) {
-    console.log(this.formulario);
+    // console.log(this.formulario);
     return (
       !this.formulario.get(campo).valid &&
       (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)
@@ -197,5 +203,12 @@ export class DataFormComponent implements OnInit {
   getFrameworksControls() {
     // console.log((this.formulario.get('frameworks') as FormArray).controls);
     return this.formulario.get('frameworks') ? (this.formulario.get('frameworks') as FormArray).controls : null;
+  }
+
+  validarEmail(formControl: FormControl) {
+    console.log(this.verificaEmailService.verificarEmail(formControl.value));
+    return this.verificaEmailService.verificarEmail(formControl.value)
+      .pipe(map(emailExiste => emailExiste ? { emailInvalido: true } : null));
+
   }
 }
