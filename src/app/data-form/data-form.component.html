@@ -5,8 +5,8 @@
   <div class="col-sm-12">
     <input type="text" class="form-control" formControlName="nome" id="nome" placeholder="Nome"
       [ngClass]="aplicaCssErro('nome')">
-    <app-campo-control-erro [mostrarErro]="verificaValidTouched('nome')" msgErro="Nome é obrigatório">
-    </app-campo-control-erro>
+    <app-error-msg [control]="formulario.get('nome')" label="Nome">
+    </app-error-msg>
   </div>
 
   <div class="form-group" [ngClass]="aplicaCssErro('email')">
@@ -20,14 +20,12 @@
       </app-campo-control-erro>
       <app-campo-control-erro [mostrarErro]="verificaEmailInvalido()" msgErro="Email inválido">
       </app-campo-control-erro>
-      <app-campo-control-erro [mostrarErro]="formulario.get('email').status == 'PENDING'"
-       msgErro="Validando email...">
+      <app-campo-control-erro [mostrarErro]="formulario.get('email').status == 'PENDING'" msgErro="Validando email...">
       </app-campo-control-erro>
-      <app-campo-control-erro [mostrarErro]="formulario.get('email').status == 'VALID'"
-       msgErro="Email válido">
+      <app-campo-control-erro [mostrarErro]="formulario.get('email').status == 'VALID'" msgErro="Email válido">
       </app-campo-control-erro>
       <app-campo-control-erro [mostrarErro]="formulario.get('email').hasError('emailInvalido')"
-       msgErro="Email já cadastrado">
+        msgErro="Email já cadastrado">
       </app-campo-control-erro>
     </div>
   </div>
@@ -37,9 +35,10 @@
       <label for="confirmarEmail" class="control-label">Confirmar Email</label>
     </div>
     <div class="col-sm-12">
-      <input type="email" class="form-control" formControlName="confirmarEmail" id="confirmarEmail" placeholder="nome@email.com"
-        [ngClass]="aplicaCssErro('email')">
-      <app-campo-control-erro [mostrarErro]="formulario.get('confirmarEmail').hasError('equalTo')" msgErro="Emails não são iguais">
+      <input type="email" class="form-control" formControlName="confirmarEmail" id="confirmarEmail"
+        placeholder="nome@email.com" [ngClass]="aplicaCssErro('email')">
+      <app-campo-control-erro [mostrarErro]="formulario.get('confirmarEmail').hasError('equalTo')"
+        msgErro="Emails não são iguais">
       </app-campo-control-erro>
     </div>
   </div>
@@ -51,7 +50,8 @@
         <input type="text" class="form-control" id="cep" formControlName="cep" (blur)="consultaCEP()">
         <app-campo-control-erro [mostrarErro]="verificaRequired('endereco.cep')" msgErro="CEP é obrigatório">
         </app-campo-control-erro>
-        <app-campo-control-erro [mostrarErro]="formulario.get('endereco.cep').hasError('cepInvalido')" msgErro="CEP inválido">
+        <app-campo-control-erro [mostrarErro]="formulario.get('endereco.cep').hasError('cepInvalido')"
+          msgErro="CEP inválido">
         </app-campo-control-erro>
       </div>
       <div class="col-sm-3" [ngClass]="aplicaCssErro('endereco.numero')">
