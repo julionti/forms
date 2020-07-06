@@ -1,14 +1,14 @@
-import { VerificaEmailService } from './services/verifica-email.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, EMPTY } from 'rxjs';
+import { map, tap, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { DropdownService } from './../shared/services/dropdown.service';
 import { EstadoBr } from './../shared/models/estado-br';
 import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { FormValidations } from './../shared/form-validations';
+import { VerificaEmailService } from './services/verifica-email.service';
 
 @Component({
   selector: 'app-data-form',
@@ -71,6 +71,19 @@ export class DataFormComponent implements OnInit {
       termos: [null, Validators.pattern('true')],
       frameworks: this.buldFrameworks()
     });
+
+    // this.formulario.get('endereco.cep').valueChanges
+    //   .subscribe(value => console.log('valor CEP:', value));
+    this.formulario.get('endereco.cep').statusChanges
+      .pipe(
+        distinctUntilChanged(), // só passa daqui quando mudar o status
+        tap(value => console.log('status CEP:', value)),
+        switchMap(status => status === 'VALID' ? // só retorna um subscribe se status VALID
+          this.cepService.consultaCEP(this.formulario.get('endereco.cep').value)
+          : EMPTY
+        )
+      )
+      .subscribe(dados => dados ? this.populaDadosForm(dados) : {}); // só executa se status VALID
   }
 
   buldFrameworks() {
