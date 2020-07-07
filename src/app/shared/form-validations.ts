@@ -39,7 +39,7 @@ export class FormValidations {
       if (!formControl.root || !(formControl.root as FormGroup).controls) {
         return null;
       }
-      console.log((formControl.root as FormGroup).get(otherField)); // null campo nãp foi renderizado
+      // console.log((formControl.root as FormGroup).get(otherField)); // null campo nãp foi renderizado
       const field = (formControl.root as FormGroup).get(otherField);
 
       if (!field) {

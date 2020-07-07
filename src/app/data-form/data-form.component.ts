@@ -9,15 +9,16 @@ import { EstadoBr } from './../shared/models/estado-br';
 import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { FormValidations } from './../shared/form-validations';
 import { VerificaEmailService } from './services/verifica-email.service';
+import { BaseFormComponent } from './../shared/base-form/base-form.component';
 
 @Component({
   selector: 'app-data-form',
   templateUrl: './data-form.component.html',
   styleUrls: ['./data-form.component.css']
 })
-export class DataFormComponent implements OnInit {
+export class DataFormComponent extends BaseFormComponent implements OnInit {
 
-  formulario: FormGroup; // associado a <form [formGroup]="formulario">
+  // formulario: FormGroup; // associado a <form [formGroup]="formulario">
   // estados: EstadoBr[];
   estados: Observable<EstadoBr[]>;
 
@@ -32,7 +33,9 @@ export class DataFormComponent implements OnInit {
     private dropdownService: DropdownService,
     private cepService: ConsultaCepService,
     private verificaEmailService: VerificaEmailService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
 
@@ -92,7 +95,7 @@ export class DataFormComponent implements OnInit {
     return this.formBuilder.array(values, FormValidations.requiredMinCheckbox(2));
   }
 
-  onSubmit() {
+  submit() {
     console.log(this.formulario);
 
     let valueSubmit = Object.assign({}, this.formulario.value);
@@ -102,68 +105,18 @@ export class DataFormComponent implements OnInit {
         .map((v, i) => v ? this.frameworks[i] : null).
         filter(v => v !== null)
     });
-    // console.log(valueSubmit);
-    if (this.formulario.valid) {
-      // this.http.post('https://sshttpbin.org/post', JSON.stringify(this.formulario.value)) // testar erro
-      this.http.post('https://httpbin.org/post', JSON.stringify(valueSubmit)) // rest test
-        // .map(res => res)
-        .subscribe(dados => {
-          // console.log(dados);
-          // reseta o form
-          this.resetar();
-        },
-          (error: any) => alert('erro')); // url invalida por exemplo o formulario nao reseta
-    } else {
-      console.log('Formulário inválido');
-      this.verificaValidacoesForm(this.formulario);
-    }
+    // this.http.post('https://sshttpbin.org/post', JSON.stringify(this.formulario.value)) // testar erro
+    this.http.post('https://httpbin.org/post', JSON.stringify(valueSubmit)) // rest test
+      // .map(res => res)
+      .subscribe(dados => {
+        // console.log(dados);
+        // reseta o form
+        this.resetar();
+      },
+        (error: any) => alert('erro')); // url invalida por exemplo o formulario nao reseta
   }
 
-  verificaValidacoesForm(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(campo => {
-      // console.log(campo);
-      const controle = formGroup.get(campo);
-      controle.markAsDirty();
-      if (controle instanceof FormGroup) {
-        this.verificaValidacoesForm(controle);
-      }
-    }
-    );
-  }
 
-  resetar() {
-    this.formulario.reset();
-  }
-
-  verificaValidTouched(campo: string) {
-    // console.log(this.formulario);
-    return (
-      !this.formulario.get(campo).valid &&
-      (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)
-    );
-  }
-
-  verificaRequired(campo: string) {
-    return (
-      this.formulario.get(campo).hasError('required') &&
-      (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)
-    );
-  }
-
-  verificaEmailInvalido() {
-    const campoEmail = this.formulario.get('email');
-    if (campoEmail.errors) {
-      return campoEmail.errors.email && campoEmail.touched;
-    }
-  }
-  aplicaCssErro(campo: string) {
-    return {
-      'is-invalid': this.verificaValidTouched(campo),
-      // 'is-valid': this.verificaValidTouched(campo)
-      // 'has-error': this.verificaValidTouched(campo),
-      // 'has-feedback': this.verificaValidTouched(campo)
-    };
-  }
 
   consultaCEP() {
     const cep = this.formulario.get('endereco.cep').value;
@@ -219,7 +172,7 @@ export class DataFormComponent implements OnInit {
   }
 
   validarEmail(formControl: FormControl) {
-    console.log(this.verificaEmailService.verificarEmail(formControl.value));
+    // console.log(this.verificaEmailService.verificarEmail(formControl.value));
     return this.verificaEmailService.verificarEmail(formControl.value)
       .pipe(map(emailExiste => emailExiste ? { emailInvalido: true } : null));
 
