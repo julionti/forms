@@ -25,13 +25,10 @@ export class InputFieldComponent implements ControlValueAccessor {
   private innerValue: any;
 
   get value() {
-    console.log('get');
     return this.innerValue;
   }
 
   set value(v: any) {
-    console.log('setv', v);
-    console.log('seti', this.innerValue);
     if (v !== this.innerValue) {
       this.innerValue = v;
       this.onChangeCb(v);
@@ -42,7 +39,6 @@ export class InputFieldComponent implements ControlValueAccessor {
   onTouchedCb: (_: any) => void = () => {};
 
   writeValue(v: any): void {
-    console.log('write', v);
     this.value = v;
   }
 
