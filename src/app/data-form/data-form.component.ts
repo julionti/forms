@@ -1,7 +1,8 @@
+import { Cidade } from './../shared/models/cidade';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Observable, EMPTY } from 'rxjs';
+import { Observable, EMPTY, empty } from 'rxjs';
 import { map, tap, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { DropdownService } from './../shared/services/dropdown.service';
@@ -19,8 +20,9 @@ import { BaseFormComponent } from './../shared/base-form/base-form.component';
 export class DataFormComponent extends BaseFormComponent implements OnInit {
 
   // formulario: FormGroup; // associado a <form [formGroup]="formulario">
-  // estados: EstadoBr[];
-  estados: Observable<EstadoBr[]>;
+  estados: EstadoBr[];
+  // estados: Observable<EstadoBr[]>;
+  cidades: Cidade[];
 
   cargos: any[];
   tecnologias: any[];
@@ -46,7 +48,10 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
        .subscribe(dados => { this.estados = dados; console.log(dados);
        });*/
     // não precisa do subscribe nem do unsubscribe pois é async(no html)
-    this.estados = this.dropdownService.getEstadosBr();
+    // this.estados = this.dropdownService.getEstadosBr(); // tirei o async do html
+    this.dropdownService.getEstadosBr().
+      subscribe(dados => this.estados = dados);
+
 
     this.cargos = this.dropdownService.getCargos();
     this.tecnologias = this.dropdownService.getTecnologias();
@@ -87,6 +92,19 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
         )
       )
       .subscribe(dados => dados ? this.populaDadosForm(dados) : {}); // só executa se status VALID
+
+    // testar cidades
+    // this.dropdownService.getCidades(8).subscribe(console.log);
+
+    this.formulario.get('endereco.estado').valueChanges
+      .pipe(
+        tap(estado => console.log('Novo estado:', estado)),
+        map(estado => this.estados.filter(e => e.sigla === estado)),
+        map(estados => estados && estados.length > 0 ? estados[0].id : EMPTY),
+        switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
+        tap(console.log)
+      )
+      .subscribe(cidades => this.cidades = cidades);
   }
 
   buldFrameworks() {
